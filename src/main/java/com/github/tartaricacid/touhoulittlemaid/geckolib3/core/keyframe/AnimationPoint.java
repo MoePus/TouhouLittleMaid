@@ -14,7 +14,7 @@ public abstract class AnimationPoint {
     /**
      * 当前关键帧播放进度
      */
-    public final double currentTick;
+    public double currentTick;
     /**
      * 当前关键帧总长度
      */
@@ -25,9 +25,9 @@ public abstract class AnimationPoint {
     private final AnimationControllerContext context;
 
     public AnimationPoint(double currentTick, double totalTick, AnimationControllerContext context) {
-        this.currentTick = currentTick;
         this.totalTick = totalTick;
         this.context = context;
+        this.currentTick = currentTick;
     }
 
     protected double getPercentCompleted() {

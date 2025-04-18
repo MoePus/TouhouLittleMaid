@@ -71,16 +71,16 @@ public class AnimationProcessor<T extends AnimatableEntity<?>> {
             event.setController(controller);
             // 处理动画并向点队列添加新值
             controller.process(seekTime, event, evaluator, modelRendererList, false, rendererDirty, shouldUpdate);
-            boolean isParallelController = controller.getName().startsWith("parallel_");
+            boolean isParallelController = controller.isParallelController();
             // 遍历每个骨骼，并对属性进行插值计算
             for (BoneAnimationQueue boneAnimation : controller.getBoneAnimationQueues()) {
                 BoneTopLevelSnapshot snapshot = boneAnimation.topLevelSnapshot;
-                BoneSnapshot initialSnapshot = snapshot.bone.getInitialSnapshot();
-                PointData pointData = snapshot.cachedPointData;
 
                 // 如果此骨骼有任何旋转值
-                if (!boneAnimation.rotationQueue().isEmpty()) {
-                    Vector3f scale = boneAnimation.rotationQueue().poll().getLerpPoint(evaluator);
+                if (boneAnimation.rotation != null) {
+                    Vector3f scale = boneAnimation.rotation.getLerpPoint(evaluator);
+                    BoneSnapshot initialSnapshot = snapshot.bone.getInitialSnapshot();
+                    PointData pointData = snapshot.cachedPointData;
                     pointData.rotationValueX += scale.x();
                     pointData.rotationValueY += scale.y();
                     pointData.rotationValueZ += scale.z();
@@ -97,8 +97,8 @@ public class AnimationProcessor<T extends AnimatableEntity<?>> {
                 }
 
                 // 如果此骨骼有任何位置值
-                if (!boneAnimation.positionQueue().isEmpty()) {
-                    Vector3f position = boneAnimation.positionQueue().poll().getLerpPoint(evaluator);
+                if (boneAnimation.position != null) {
+                    Vector3f position = boneAnimation.position.getLerpPoint(evaluator);
                     snapshot.positionOffsetX = position.x();
                     snapshot.positionOffsetY = position.y();
                     snapshot.positionOffsetZ = position.z();
@@ -106,8 +106,8 @@ public class AnimationProcessor<T extends AnimatableEntity<?>> {
                 }
 
                 // 如果此骨骼有任何缩放点
-                if (!boneAnimation.scaleQueue().isEmpty()) {
-                    Vector3f scale = boneAnimation.scaleQueue().poll().getLerpPoint(evaluator);
+                if (boneAnimation.scale != null) {
+                    Vector3f scale = boneAnimation.scale.getLerpPoint(evaluator);
                     snapshot.scaleValueX = scale.x();
                     snapshot.scaleValueY = scale.y();
                     snapshot.scaleValueZ = scale.z();
