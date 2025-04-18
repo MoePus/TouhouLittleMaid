@@ -32,7 +32,6 @@ public class BoneAnimationQueue {
         controllerSnapshot.copyFrom(topLevelSnapshot);
     }
 
-    // 链表重开比 clear() 快
     public void resetQueues() {
         rotation = null;
         position = null;
