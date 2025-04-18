@@ -8,15 +8,40 @@ import org.joml.Vector3f;
 
 public class KeyFramePoint extends AnimationPoint {
     public final BoneKeyFrame keyframe;
+    private int lastTick = Integer.MIN_VALUE;
+    private Vector3f lastValue;
+    private Vector3f nextValue;
 
     public KeyFramePoint(double currentTick, BoneKeyFrame keyframe, AnimationControllerContext context) {
         super(currentTick, keyframe.getTotalTick(), context);
         this.keyframe = keyframe;
+        updateTick(currentTick);
+    }
+
+    public void updateTick(double currentTick) {
+        this.currentTick = currentTick;
     }
 
     @Override
     public Vector3f getLerpPoint(ExpressionEvaluator<AnimationContext<?>> evaluator) {
         setupControllerContext(evaluator);
-        return keyframe.getLerpPoint(evaluator, getPercentCompleted());
+        if (totalTick == 0) {
+            if (lastTick == 0)
+                return lastValue;
+            lastValue = keyframe.getLerpPoint(evaluator, 1);
+            lastTick = 0;
+            return lastValue;
+        }
+        int floorTick = (int) Math.floor(currentTick);
+        float fract =  (float)currentTick - floorTick;
+
+        if (floorTick != lastTick) {
+            lastValue = nextValue != null ? nextValue : keyframe.getLerpPoint(evaluator, (double) floorTick / totalTick);
+            nextValue = keyframe.getLerpPoint(evaluator, (double) (floorTick + 1) / totalTick);
+            lastTick = floorTick;
+        }
+
+        Vector3f result = new Vector3f(lastValue);
+        return result.lerp(nextValue, fract);
     }
 }
