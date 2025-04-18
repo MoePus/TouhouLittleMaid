@@ -17,8 +17,8 @@ public class TransitionPoint extends AnimationPoint {
     }
 
     @Override
-    public Vector3f getLerpPoint(ExpressionEvaluator<AnimationContext<?>> evaluator) {
+    public void getLerpPoint(ExpressionEvaluator<AnimationContext<?>> evaluator, Vector3f dest) {
         setupControllerContext(evaluator);
-        return dstKeyframe.getTransitionPoint(evaluator, offsetPoint, getPercentCompleted());
+        dstKeyframe.getTransitionPoint(evaluator, offsetPoint, getPercentCompleted(), dest);
     }
 }

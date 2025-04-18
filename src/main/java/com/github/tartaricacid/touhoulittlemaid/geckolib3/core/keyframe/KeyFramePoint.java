@@ -23,14 +23,17 @@ public class KeyFramePoint extends AnimationPoint {
     }
 
     @Override
-    public Vector3f getLerpPoint(ExpressionEvaluator<AnimationContext<?>> evaluator) {
+    public void getLerpPoint(ExpressionEvaluator<AnimationContext<?>> evaluator, Vector3f dest) {
         setupControllerContext(evaluator);
         if (totalTick == 0) {
-            if (lastTick == 0)
-                return lastValue;
+            if (lastTick == 0) {
+                dest.set(lastValue);
+                return;
+            }
             lastValue = keyframe.getLerpPoint(evaluator, 1);
             lastTick = 0;
-            return lastValue;
+            dest.set(lastValue);
+            return;
         }
         int floorTick = (int) Math.floor(currentTick);
         float fract =  (float)currentTick - floorTick;
@@ -41,7 +44,6 @@ public class KeyFramePoint extends AnimationPoint {
             lastTick = floorTick;
         }
 
-        Vector3f result = new Vector3f(lastValue);
-        return result.lerp(nextValue, fract);
+        lastValue.lerp(nextValue, fract, dest);
     }
 }

@@ -481,13 +481,13 @@ public class AnimationController<T extends AnimatableEntity<?>> {
     }
 
     private AnimationPoint updateKeyFramePoint(AnimationPoint animationPoint, List<BoneKeyFrame> frames, double tick, AnimationControllerContext context) {
-        BoneKeyFrame frame = getKeyFrameAtTick(frames, tick);
         if (animationPoint instanceof KeyFramePoint keyPoint) {
-            if (frame == keyPoint.keyframe) {
-                keyPoint.updateTick(tick - frame.getStartTick());
+            if (tick < keyPoint.keyframe.getStartTick() + keyPoint.keyframe.getTotalTick()) {
+                keyPoint.updateTick(tick - keyPoint.keyframe.getStartTick());
                 return keyPoint;
             }
         }
+        BoneKeyFrame frame = getKeyFrameAtTick(frames, tick);
         return getKeyFramePointAtTick(frame, tick, context);
     }
 

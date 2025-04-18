@@ -38,5 +38,5 @@ public abstract class AnimationPoint {
         evaluator.entity().setAnimationControllerContext(context);
     }
 
-    public abstract Vector3f getLerpPoint(ExpressionEvaluator<AnimationContext<?>> evaluator);
+    public abstract void getLerpPoint(ExpressionEvaluator<AnimationContext<?>> evaluator, Vector3f dest);
 }
