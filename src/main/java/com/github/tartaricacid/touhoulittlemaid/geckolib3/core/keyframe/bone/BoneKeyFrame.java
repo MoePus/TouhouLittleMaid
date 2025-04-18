@@ -32,7 +32,11 @@ public abstract class BoneKeyFrame {
         if (isEnd(percentCompleted)) {
             return beginPoint.eval(evaluator);
         }
-        return offsetPoint.lerp(beginPoint.eval(evaluator), (float)percentCompleted, dest);
+        return offsetPoint.lerp(beginPoint.eval(evaluator), (float) percentCompleted, dest);
+    }
+
+    public Vector3f eval(ExpressionEvaluator<?> evaluator) {
+        return beginPoint.eval(evaluator);
     }
 
     protected static boolean isBegin(double percentCompleted) {
